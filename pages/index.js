@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Posts from "../components/Posts";
 import { useState } from "react";
 import Footer from "../components/Footer";
+import Container from "../components/Container";
 export default function Home() {
   const [posts, setPosts] = useState([
     {
@@ -80,23 +81,18 @@ export default function Home() {
   ]);
   return (
     <>
-      <div className="bg-gradient-to-b from-[#374151] to-[#111827] min-h-screen text-white">
-        <div className="container mx-auto pb-10">
-          <Navbar />
-          <FeaturedPost />
-          <div className="flex flex-wrap -mx-4">
-            {posts.map((post) => (
-              <div
-                className="w-full sm:w-6/12 md:w-4/12 px-4 mb-6"
-                key={post.id}
-              >
-                <Posts {...post} />
-              </div>
-            ))}
-          </div>
-          <Footer />
+      <Container>
+        <Navbar />
+        <FeaturedPost />
+        <div className="flex flex-wrap -mx-4">
+          {posts.map((post) => (
+            <div className="w-full sm:w-6/12 md:w-4/12 px-4 mb-6" key={post.id}>
+              <Posts {...post} />
+            </div>
+          ))}
         </div>
-      </div>
+        <Footer />
+      </Container>
     </>
   );
 }
