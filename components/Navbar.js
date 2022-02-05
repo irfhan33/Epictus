@@ -41,8 +41,13 @@ export default function Navbar() {
             <li className="hover:underline">
               <a href="#">Back-end</a>
             </li>
-            <li className="relative hover:underline" onClick={openDropdown}>
-              <a className="cursor-pointer flex items-center">
+            <li
+              className="relative hover:underline"
+              onClick={openDropdown}
+              // onMouseEnter={openDropdown}
+              // onMouseLeave={openDropdown}
+            >
+              <button className="cursor-pointer flex items-center">
                 Lainnya
                 <svg
                   className="ml-2"
@@ -60,7 +65,7 @@ export default function Navbar() {
                     strokeLinejoin="round"
                   />
                 </svg>
-              </a>
+              </button>
               {dropdown && (
                 <ul className="absolute w-[150px] bg-[#1F2937] rounded text-gray-400 overlay-hidden cursor-pointer mt-2 shadow-2xl ">
                   {listDropdown.map(({ title, href }) => (

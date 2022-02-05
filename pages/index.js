@@ -86,7 +86,10 @@ export default function Home() {
           <FeaturedPost />
           <div className="flex flex-wrap -mx-4">
             {posts.map((post) => (
-              <div className="w-4/12 px-4 mb-6" key={post.id}>
+              <div
+                className="w-full sm:w-6/12 md:w-4/12 px-4 mb-6"
+                key={post.id}
+              >
                 <Posts {...post} />
               </div>
             ))}
