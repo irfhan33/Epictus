@@ -2,90 +2,44 @@ import FeaturedPost from "../components/FeaturedPost";
 import Posts from "../components/Posts";
 import { useState } from "react";
 import Layout from "../components/Layout";
+import Head from "next/head";
 
-export default function Home() {
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      thumbnail: "/tes.png",
-      category: "INTERNET",
-      date: "June 28, 2021",
-      title: "How to design a product that can grow itself 10x in year",
-      description:
-        "Auctor Porta. Augue vitae diam mauris faucibus blandit elit per, feugiat leo dui orci. Etiam vestibulum. Nostra netus per conubia dolor.",
-      authorAvatar: "/author-1.png",
-      authorName: "Jenny Wilson",
-      authorJob: "Product Designer",
+export async function getServerSideProps() {
+  const reqFeatured = await fetch(
+    process.env.NEXT_PUBLIC_APIURL +
+      "/posts?populate[0]=thumbnail&populate[1]=author.avatar&populate[2]=category&filters[featured][$eq]=true"
+  );
+  const resFeatured = await reqFeatured.json();
+
+  const reqPost = await fetch(
+    process.env.NEXT_PUBLIC_APIURL +
+      "/posts?populate[0]=thumbnail&populate[1]=author.avatar&populate[2]=category&filters[featured][$eq]=false"
+  );
+  const resPost = await reqPost.json();
+
+  return {
+    props: {
+      featured:
+        resFeatured.data.length > 0 ? resFeatured.data[0].attributes : false,
+      post: resPost.data,
     },
-    {
-      id: 2,
-      thumbnail: "/thumbnail-3.png",
-      category: "9 TO 5",
-      date: "June 22, 2021",
-      title: "The More Important the Work, the More Important the Rest",
-      description:
-        "Suitable Quality is determined by product users, clients or customers, not by society in general. For example, a low priced product may be viewed as having high.",
-      authorAvatar: "/author-2.png",
-      authorName: "Esther Howard",
-      authorJob: "Entrepreneurr",
-    },
-    {
-      id: 3,
-      thumbnail: "/thumbnail-4.png",
-      category: "INSPIRATIONS",
-      date: "June 18, 2021",
-      title: "Email Love - Email Inspiration, Templates and Discovery",
-      description:
-        "Consider that for a moment: everything we see around us is assumed to have had a cause and is contingent upon something else.",
-      authorAvatar: "/author-3.png",
-      authorName: "Robert Fox",
-      authorJob: "Front-end Engineer",
-    },
-    {
-      id: 1,
-      thumbnail: "/thumbnail-2.png",
-      category: "INTERNET",
-      date: "June 28, 2021",
-      title: "How to design a product that can grow itself 10x in year",
-      description:
-        "Auctor Porta. Augue vitae diam mauris faucibus blandit elit per, feugiat leo dui orci. Etiam vestibulum. Nostra netus per conubia dolor.",
-      authorAvatar: "/author-1.png",
-      authorName: "Jenny Wilson",
-      authorJob: "Product Designer",
-    },
-    {
-      id: 2,
-      thumbnail: "/thumbnail-3.png",
-      category: "9 TO 5",
-      date: "June 22, 2021",
-      title: "The More Important the Work, the More Important the Rest",
-      description:
-        "Suitable Quality is determined by product users, clients or customers, not by society in general. For example, a low priced product may be viewed as having high.",
-      authorAvatar: "/author-2.png",
-      authorName: "Esther Howard",
-      authorJob: "Entrepreneurr",
-    },
-    {
-      id: 3,
-      thumbnail: "/thumbnail-4.png",
-      category: "INSPIRATIONS",
-      date: "June 18, 2021",
-      title: "Email Love - Email Inspiration, Templates and Discovery",
-      description:
-        "Consider that for a moment: everything we see around us is assumed to have had a cause and is contingent upon something else.",
-      authorAvatar: "/author-3.png",
-      authorName: "Robert Fox",
-      authorJob: "Front-end Engineer",
-    },
-  ]);
+  };
+}
+export default function Home({ featured, post: initialPost, categories }) {
+  const [posts, setPosts] = useState(initialPost);
   return (
     <>
-      <Layout>
-        <FeaturedPost />
+      <Head>
+        <title>Home</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
+      <Layout categories={categories}>
+        {featured && <FeaturedPost {...featured} />}
+
         <div className="flex flex-wrap -mx-4">
           {posts.map((post) => (
             <div className="w-full sm:w-6/12 md:w-4/12 px-4 mb-6" key={post.id}>
-              <Posts {...post} />
+              <Posts {...post.attributes} />
             </div>
           ))}
         </div>

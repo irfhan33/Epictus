@@ -19,7 +19,15 @@ module.exports = {
       sans: ["Patrick Hand", "cursive"],
       logo: ["Source Sans Pro", "sans-serif"],
     },
-    extend: {},
+    extend: {
+      typography: {
+        DEFAULT: {
+          css: {
+            color: "#FFFFFF",
+          },
+        },
+      },
+    },
   },
   plugins: [
     plugin(function ({ addUtilities }) {
@@ -31,5 +39,6 @@ module.exports = {
         },
       });
     }),
+    require("@tailwindcss/typography"),
   ],
 };
