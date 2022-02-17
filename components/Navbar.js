@@ -1,10 +1,12 @@
 import { useState } from "react";
 import Link from "next/link";
+import Router from "next/router";
 
 export default function Navbar({ categories }) {
   const [dropdown, setDropdown] = useState(false);
   const [offcanvas, setOffcanvas] = useState(false);
   const [search, setSearch] = useState(false);
+  const [doSearch, setdoSearch] = useState("");
 
   const listDropdown = [
     {
@@ -23,6 +25,12 @@ export default function Navbar({ categories }) {
 
   function openDropdown() {
     setDropdown(!dropdown);
+  }
+
+  function dosearchFunction(e) {
+    e.preventDefault();
+
+    Router.push("/search?q=" + doSearch);
   }
   return (
     <nav className="py-10">
@@ -219,11 +227,14 @@ export default function Navbar({ categories }) {
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           </button>
-          <input
-            type="text"
-            className="bg-[#1F2937] rounded-full py-2 w-full outline-none px-9 bg-search"
-            placeholder="Search"
-          />
+          <form onSubmit={dosearchFunction}>
+            <input
+              type="text"
+              className="bg-[#1F2937] rounded-full py-2 w-full outline-none px-9 bg-search"
+              placeholder="Search"
+              onChange={(e) => setdoSearch(e.target.value)}
+            />
+          </form>
         </div>
       </div>
     </nav>

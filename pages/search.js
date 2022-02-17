@@ -1,46 +1,25 @@
-import Layout from "../../components/Layout";
+import Layout from "../components/Layout";
 import { useState } from "react";
-import Posts from "../../components/Posts";
-import SectionTitle from "../../components/SectionTItle";
+import Posts from "../components/Posts";
+import SectionTitle from "../components/SectionTItle";
 import Head from "next/head";
 
-export async function getServerSideProps({
-  params,
-  query,
-  query: { category },
-}) {
-  const reqCategory = await fetch(
+export async function getServerSideProps({ query: { q } }) {
+  const reqSearch = await fetch(
     process.env.NEXT_PUBLIC_APIURL +
-      "/posts?populate[0]=thumbnail&populate[1]=author.avatar&populate[2]=category&filters[category][slug][$eq]=" +
-      category
+      "/posts?populate[0]=thumbnail&populate[1]=author.avatar&populate[2]=category&filters[title][$contains]=" +
+      q
   );
-  const resCategory = await reqCategory.json();
-
-  const reqCategoryName = await fetch(
-    process.env.NEXT_PUBLIC_APIURL +
-      "/categories?filters[slug][$eq]=" +
-      category
-  );
-
-  const resCategoryName = await reqCategoryName.json();
+  const resSearch = await reqSearch.json();
 
   return {
     props: {
-      posts: resCategory.data,
-      categoryName:
-        resCategoryName.data.length > 0
-          ? resCategoryName.data[0].attributes.name
-          : {},
-      searchCategory: category,
+      posts: resSearch.data,
+      q,
     },
   };
 }
-export default function posts({
-  categories,
-  posts,
-  categoryName,
-  searchCategory,
-}) {
+export default function posts({ posts, categories, q }) {
   return (
     <>
       <Head>
@@ -51,7 +30,7 @@ export default function posts({
         {!posts.length ? (
           <div className="text-center flex flex-col items-center">
             <p className="md:text-2xl text-xl lg:text-3xl text-white py-10">
-              Search: {searchCategory}
+              Search: {q}
             </p>
             <h1 className="md:text-5xl text-4xl lg:text-7xl mb-4">
               No result 😥
@@ -63,7 +42,7 @@ export default function posts({
           </div>
         ) : (
           <>
-            <SectionTitle>{categoryName}</SectionTitle>
+            <SectionTitle>Search: {q}</SectionTitle>
             <div className="flex flex-wrap -mx-4">
               {posts.map((post) => (
                 <div
